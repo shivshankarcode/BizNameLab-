@@ -1,9 +1,9 @@
 'use client'
 import DomainStatus from '@/components/DomainStatus'
+import { fetchData } from '@/components/fetchData'
 import Sidebar from '@/components/Sidebar'
 import { useQueryContext } from '@/context/BusinessNameContext'
-import { generatePrompt } from '@/helpers/function'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+
 import React, { useEffect, useRef, useState } from 'react'
 
 const BusinessName = () => {
@@ -20,17 +20,9 @@ const BusinessName = () => {
     const fetchBusinessName = async () => {
         try {
             setLoading(true)
-            const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
-            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
             const inputs = { ...query, names }
-
-            const prompt = generatePrompt(inputs);
-
-            const result = await model.generateContent(prompt);
-            const unfilteredJsonString = result.response.text()
-            const jsonString = unfilteredJsonString.replace(/```json|```/g, '')
-            const jsonData = JSON.parse(jsonString)
+            const jsonData = await fetchData(inputs) // Call the fetchData function with the inputs
+            console.log("Fetched data:", jsonData) // Log the fetched data for debugging
             if (jsonData && jsonData.names) {
                 const newNames = jsonData.names
                 setNames([...names, ...newNames])
@@ -43,10 +35,12 @@ const BusinessName = () => {
     }
 
     useEffect(() => {
+
         fetchBusinessName()
     }, [page])
 
     useEffect(() => {
+        
         setNames([])
         fetchBusinessName()
     }, [refresh])
