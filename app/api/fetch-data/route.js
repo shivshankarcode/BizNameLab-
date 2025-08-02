@@ -25,7 +25,6 @@ export async function POST(req) {
       
     });
     
-    console.log("Response from Gemini:", response);
     const unfilteredJsonString = response.text; // Extract text output
     const jsonString = unfilteredJsonString.replace(/```json|```/g, "");
     const jsonData = JSON.parse(jsonString);

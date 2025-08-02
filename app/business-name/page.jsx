@@ -22,7 +22,6 @@ const BusinessName = () => {
             setLoading(true)
             const inputs = { ...query, names }
             const jsonData = await fetchData(inputs) // Call the fetchData function with the inputs
-            console.log("Fetched data:", jsonData) // Log the fetched data for debugging
             if (jsonData && jsonData.names) {
                 const newNames = jsonData.names
                 setNames([...names, ...newNames])
